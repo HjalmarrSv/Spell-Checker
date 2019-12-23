@@ -17,7 +17,9 @@
 
 import pandas as pd
 import numpy as np
-import tensorflow as tf
+#import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 import os
 from os import listdir
 from os.path import isfile, join
@@ -612,8 +614,8 @@ keep_probability = 0.75
 
 def build_graph(keep_prob, rnn_size, num_layers, batch_size, learning_rate, embedding_size, direction):
 
-    tf.compat.v1.get_default_graph()
-    
+    # tf.compat.v1.get_default_graph()
+    tf.reset_default_graph()
     # Load the model inputs    
     inputs, targets, keep_prob, inputs_length, targets_length, max_target_length = model_inputs()
 
