@@ -253,8 +253,8 @@ def noise_maker(sentence, threshold):
             noisy_sentence.append(sentence[i])
         else:
             new_random = np.random.uniform(0,1,1)
-            # ~33% chance characters will swap locations #25%
-            if new_random > 0.75:
+            # ~20% chance characters will swap locations
+            if new_random > 0.8:
                 if i == (len(sentence) - 1):
                     # If last character in sentence, it will not be typed
                     continue
@@ -263,17 +263,64 @@ def noise_maker(sentence, threshold):
                     noisy_sentence.append(sentence[i+1])
                     noisy_sentence.append(sentence[i])
                     i += 1
-            # ~33% chance an extra lower case letter will be added to the sentence #25%
-            elif new_random > 0.50:
+            # ~20% chance an extra lower case letter will be added to the sentence
+            elif new_random > 0.60:
                 random_letter = np.random.choice(letters, 1)[0]
                 noisy_sentence.append(vocab_to_int[random_letter])
                 noisy_sentence.append(sentence[i])
-           # 25% chance of typical OCR/scanner error
-            elif new_random > 0.25:
-            #    random_letter = np.random.choice(letters, 1)[0]
-            #    noisy_sentence.append(vocab_to_int[random_letter])
-            #    noisy_sentence.append(sentence[i])                
-            # ~33% chance a character will not be typed #20%
+           # 20% chance of typical OCR/scanner error, wrong letter
+            elif new_random > 0.40:
+                if i < (len(sentence) - 1): #be at least 2 letters from end
+                    two_letters = []
+                    one_letter = []
+                    two_letters = int_to_vocab (sentence[i])
+                    two_letters.append(int_to_vocab (sentence[i+1]))
+                    if two_letters == ["ll"]:
+                        one_letter = ["U"]
+                         i += 1
+                    elif two_letters == ["il"]:
+                        one_letter = ["U"]
+                         i += 1
+                    elif two_letters == ["ti"]:
+                        one_letter = ["U"]
+                         i += 1
+                    elif two_letters == ["tt"]:
+                        one_letter = ["i"]
+                    elif two_letters == ["te"]:
+                        one_letter = ["l"]
+                    elif two_letters == ["ta"]:
+                        one_letter = ["l"]
+                    elif two_letters == ["ro"]:
+                        one_letter = ["i"]
+                    else:
+                        one_letter = ["I"]
+                else:
+                    two_letters = [] #only one letter this time
+                    one_letter = []
+                    two_letters = int_to_vocab (sentence[i])
+                    if two_letters == ["l"]:
+                        one_letter = ["t"]
+          
+                    elif two_letters == ["t"]:
+                        one_letter = ["i"]
+                   
+                    elif two_letters == ["i"]:
+                        one_letter = ["l"]
+                    else:
+                        one_letter = ["i"]
+ 
+                noisy_sentence.append(vocab_to_int[one_letter])
+            #                   
+            
+           # 20% chance of typical OCR/scanner error, wrong space or -
+            elif new_random > 0.3:
+                noisy_sentence.append(vocab_to_int[" "])
+                noisy_sentence.append(sentence[i])               
+            elif new_random > 0.2:
+                noisy_sentence.append(vocab_to_int["-"])
+                noisy_sentence.append(sentence[i])              
+            
+            
             else:
                 pass     
         i += 1
