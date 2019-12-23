@@ -273,8 +273,8 @@ def noise_maker(sentence, threshold):
                 if i < (len(sentence) - 1): #be at least 2 letters from end
                     two_letters = []
                     one_letter = []
-                    two_letters = int_to_vocab (sentence[i])
-                    two_letters.append(int_to_vocab (sentence[i+1]))
+                    two_letters = int_to_vocab[sentence[i]]
+                    two_letters +=(int_to_vocab[sentence[i+1]])
                     if two_letters == ["ll"]:
                         one_letter = ["U"]
                          i += 1
@@ -297,7 +297,7 @@ def noise_maker(sentence, threshold):
                 else:
                     two_letters = [] #only one letter this time
                     one_letter = []
-                    two_letters = int_to_vocab (sentence[i])
+                    two_letters = int_to_vocab[sentence[i]]
                     if two_letters == ["l"]:
                         one_letter = ["t"]
           
@@ -612,7 +612,7 @@ keep_probability = 0.75
 
 def build_graph(keep_prob, rnn_size, num_layers, batch_size, learning_rate, embedding_size, direction):
 
-    tf.reset_default_graph()
+    tf.compat.v1.get_default_graph()
     
     # Load the model inputs    
     inputs, targets, keep_prob, inputs_length, targets_length, max_target_length = model_inputs()
