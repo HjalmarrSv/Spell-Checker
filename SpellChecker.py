@@ -433,7 +433,7 @@ def training_decoding_layer(dec_embed_input, targets_length, dec_cell, initial_s
                                                            initial_state,
                                                            output_layer) 
 
-        training_logits, _ = tf.contrib.seq2seq.dynamic_decode(training_decoder,
+        training_logits, _, _ = tf.contrib.seq2seq.dynamic_decode(training_decoder,
                                                                output_time_major=False,
                                                                impute_finished=True,
                                                                maximum_iterations=max_target_length)
@@ -458,7 +458,7 @@ def inference_decoding_layer(embeddings, start_token, end_token, dec_cell, initi
                                                             initial_state,
                                                             output_layer)
 
-        inference_logits, _ = tf.contrib.seq2seq.dynamic_decode(inference_decoder,
+        inference_logits, _, _ = tf.contrib.seq2seq.dynamic_decode(inference_decoder,
                                                                 output_time_major=False,
                                                                 impute_finished=True,
                                                                 maximum_iterations=max_target_length)
@@ -489,20 +489,23 @@ def decoding_layer(dec_embed_input, embeddings, enc_output, enc_state, vocab_siz
                                                   name='BahdanauAttention')
     
     with tf.name_scope("Attention_Wrapper"):
-        dec_cell = tf.contrib.seq2seq.DynamicAttentionWrapper(dec_cell,
+        dec_cell = tf.contrib.seq2seq.AttentionWrapper(dec_cell,
                                                               attn_mech,
                                                               rnn_size)
-    
+    '''
     initial_state = tf.contrib.seq2seq.DynamicAttentionWrapperState(enc_state,
                                                                     _zero_state_tensors(rnn_size, 
                                                                                         batch_size, 
                                                                                         tf.float32))
+    '''
+    attn_zero = dec_cell.zero_state(batch_size , tf.float32)
+    attn_zero = attn_zero.clone(cell_state = enc_state)
 
     with tf.variable_scope("decode"):
         training_logits = training_decoding_layer(dec_embed_input, 
                                                   targets_length, 
                                                   dec_cell, 
-                                                  initial_state,
+                                                  attn_zero,
                                                   output_layer,
                                                   vocab_size, 
                                                   max_target_length)
@@ -511,7 +514,7 @@ def decoding_layer(dec_embed_input, embeddings, enc_output, enc_state, vocab_siz
                                                     vocab_to_int['<GO>'], 
                                                     vocab_to_int['<EOS>'],
                                                     dec_cell, 
-                                                    initial_state, 
+                                                    attn_zero, 
                                                     output_layer,
                                                     max_target_length,
                                                     batch_size)
