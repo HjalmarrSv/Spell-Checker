@@ -31,7 +31,7 @@ import re
 from sklearn.model_selection import train_test_split
 
 
-# ## Loading the Data
+# ## Loading the Data, the books, i.e. wikipedia dumps, are preformated with one sentence per line
 
 # In[2]:
 
@@ -78,9 +78,8 @@ books[0][:500]
 
 def clean_text(text):
     '''Remove unwanted characters and extra spaces from the text'''
-    text = re.sub(r'\n', ' ', text) 
-    text = re.sub(r'[{}@_*>()\\#%+=\[\]]','', text)
-    text = re.sub('a0','', text)
+    text = re.sub(r'[{}@_*>()\\#%+=\[\]]','', text) #
+    text = re.sub('a0','', text)                    #
     text = re.sub('\'92t','\'t', text)
     text = re.sub('\'92s','\'s', text)
     text = re.sub('\'92m','\'m', text)
@@ -89,9 +88,10 @@ def clean_text(text):
     text = re.sub('\'92','', text)
     text = re.sub('\'93','', text)
     text = re.sub('\'94','', text)
-    text = re.sub('\.','. ', text)
-    text = re.sub('\!','! ', text)
-    text = re.sub('\?','? ', text)
+    # not needed text = re.sub('\.','. ', text)                
+    # not needed, or wanted text = re.sub(r'\n', ' ', text)          
+    # not needed text = re.sub('\!','! ', text)
+    # not needed text = re.sub('\?','? ', text)
     text = re.sub(' +',' ', text)
     return text
 
@@ -148,11 +148,11 @@ for character, value in vocab_to_int.items():
 
 # In[16]:
 
-# Split the text from the books into sentences.
+# Split the text from the books into sentences. Use the newlines in sentencebased lines.
 sentences = []
 for book in clean_books:
-    for sentence in book.split('. '):
-        sentences.append(sentence + '.')
+    for sentence in book.splitlines():                  # splitlines instead of split, since lines are preformated
+        sentences.append(sentence)                      # not needed: sentences.append(sentence + '.')
 print("There are {} sentences.".format(len(sentences)))
 
 
