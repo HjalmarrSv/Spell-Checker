@@ -8,6 +8,12 @@ To view my work most easily, see the .ipynb file.
 
 I wrote an [article](https://medium.com/@Currie32/creating-a-spell-checker-with-tensorflow-d35b23939f60) that explains how to create the input data (the sentences with spelling mistakes) for this model.
 
+<b>New in TF1.4</b>
+
+If books do not contain all the letters in "letters = ['a','b','c',...]", there will be errors. TF1.4 have Swedish letters, remove these if running English texts.
+
+Running big datasets, e.g. wikipedia, and long sentences will take months on cpu only. Start very small!
+
 <b>Create environment to run the Jupyter notebook in linux</b>
 
 I may have forgotten something. Something may have changed since. Please study the conda documentation if you have problems.
