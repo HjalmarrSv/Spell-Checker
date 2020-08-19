@@ -29,3 +29,8 @@ Run Anaconda:<br>
 anaconda-navigator
 
 Choose Jupyter notebook and navigate to the .ipynb file. You need to have a ./books subfolder, below where the file is, with the books in.
+
+
+<b>In Windows</b>
+
+Install Anaconda and clone the base installation. Install above apps by opening a terminal in the cloned instance.
