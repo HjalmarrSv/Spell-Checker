@@ -20,6 +20,10 @@ Books 2 are Swedish government texts which are free to distribute. Use any texts
  
 Note, that the notebook saves checkpoints. It should be relatively easy to add code for reading any such checkpoint, to be inserted before the training code. Use the code from the inferencing part for example. In TF 2.0 it is possible to save weights, and reload and run specific sets of weights any number of times. An other improvement could be to save the model, and reload it. Although, since the version 2.x of TF is very different, it may be more useful to work on a newer codebase.
 
+<b> LSTM TF 2.0</b>
+
+Same use of books folder, but different neural network. One LSTM, unidirectional (and other stuff). This notebook has been run on books2 from scratch. It quickly overfits on such a small sample of text. Allowing caps and adding more texts should improve results, but adding computing time, and the need for memory.
+
 <b>Create environment to run the Jupyter notebook in linux</b>
 
 I may have forgotten something. Something may have changed since. Please study the conda documentation if you have problems.
