@@ -20,9 +20,47 @@ Books 2 are Swedish government texts which are free to distribute. Use any texts
  
 Note, that the notebook saves checkpoints. It should be relatively easy to add code for reading any such checkpoint, to be inserted before the training code. Use the code from the inferencing part for example. In TF 2.0 it is possible to save weights, and reload and run specific sets of weights any number of times. An other improvement could be to save the model, and reload it. Although, since the version 2.x of TF is very different, it may be more useful to work on a newer codebase.
 
-<b> LSTM TF 2.0</b>
+<b>LSTM TF 2.0</b>
 
 Same use of books folder, but different neural network. One LSTM, unidirectional (and other stuff). This notebook has been run on books2 from scratch. It quickly overfits on such a small sample of text. Allowing caps and adding more texts should improve results, but adding computing time, and the need for memory.
+
+<b>Improving LSTM TF 2.0</b>
+
+Changing to bidirectional LSTM is an improvement. Notice the 3 differences for Concatenate/Average in the comments. Replace existing with the following code.
+
+    # Define an input sequence and process it
+    encoder_inputs = Input(shape=(None, num_encoder_tokens))
+    encoder = Bidirectional(LSTM(latent_dim, return_state=True))
+    encoder_outputs, forward_h, forward_c, backward_h, backward_c  = encoder(encoder_inputs)
+    state_h = Concatenate()([forward_h, backward_h])#Average()([forward_h, backward_h])
+    state_c = Concatenate()([forward_c, backward_c])#Average()([forward_c, backward_c])
+
+    # We discard `encoder_outputs` and only keep the states.
+    encoder_states = [state_h, state_c]
+
+    # Set up the decoder, using `encoder_states` as initial state.
+    decoder_inputs = Input(shape=(None, num_decoder_tokens))
+
+    # decoder
+    decoder_lstm = LSTM(latent_dim*2, return_sequences=True, return_state=True)#LSTM(latent_dim, return_sequences=True, return_state=True)
+    decoder_outputs, _, _ = decoder_lstm(decoder_inputs, initial_state=encoder_states)
+    decoder_dense = Dense(num_decoder_tokens, activation='softmax')
+    decoder_outputs = decoder_dense(decoder_outputs)
+    model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
+
+You might get strange errors about dnn not found or similar. This code can help (insert after import tensorflow as tf).
+
+    gpus = tf.config.experimental.list_physical_devices('GPU')
+    if not gpus:
+        print("No GPU available")
+    try:
+        # Currently, memory growth needs to be the same across GPUs
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+    logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+    print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+    except RuntimeError as e:
+        print(e)
 
 <b>Create environment to run the Jupyter notebook in linux</b>
 
