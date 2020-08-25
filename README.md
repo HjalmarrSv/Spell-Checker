@@ -24,6 +24,23 @@ Note, that the notebook saves checkpoints. It should be relatively easy to add c
 
 Same use of books folder, but different neural network. One LSTM, unidirectional (and other stuff). This notebook has been run on books2 from scratch. It quickly overfits on such a small sample of text. Allowing caps and adding more texts should improve results, but adding computing time, and the need for memory.
 
+The model seems to work also on TF 2.1. It is not tested on 2.2 or 2.3.
+
+<b>Errors</b>
+
+Lots of errors are caused by large work units on small gpus. You may need to test smaller batch sizes if gpu memory is limited. Try 32 - 16 - 8 - 4 - 2 - 1, in descending order,  to see when the error goes away.
+  
+There seems to be a rounding error in TF regarding batches or validation. Exchange the following two lines, with their equivalents in the code.
+
+    encoder_inputs = Input(batch_input_shape=(None, max_encoder_seq_length, num_encoder_tokens))
+  
+    model.fit(
+        [encoder_input_data, decoder_input_data],
+        decoder_target_data,
+        batch_size=batch_size,
+        epochs=epochs)
+ 
+
 <b>Improving LSTM TF 2.0</b>
 
 Changing to bidirectional LSTM is an improvement. Notice the 3 differences for Concatenate/Average in the comments. Replace existing with the following code.
