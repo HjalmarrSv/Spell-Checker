@@ -102,3 +102,5 @@ Choose Jupyter notebook and navigate to the .ipynb file. You need to have a ./bo
 <b>In Windows</b>
 
 Install Anaconda and clone the base installation. Install above apps by opening a terminal in the cloned instance. Possibly you will only be able to install only a few TF versions. Try 1.9 for any code 1.x, or else 2.0 if you are willing to change the code.
+
+When running and you encounter crashes, remove all graphics applications in the Tray, e.g. [manufacturer] settings and [manufacturer] experience.
